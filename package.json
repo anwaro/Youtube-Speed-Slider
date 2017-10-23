@@ -1,0 +1,19 @@
+{
+  "name": "yt-speed-slider",
+  "version": "1.0.0",
+  "description": "YouTube Speed Slider",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anwaro/Youtube-Speed-Slider.git"
+  },
+  "author": "Łukasz Micał",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anwaro/Youtube-Speed-Slider/issues"
+  },
+  "homepage": "https://github.com/anwaro/Youtube-Speed-Slider#readme"
+}
