@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/anwaro/Youtube-Speed-Slider/issues"
   },
-  "homepage": "https://github.com/anwaro/Youtube-Speed-Slider#readme"
+  "homepage": "https://github.com/anwaro/Youtube-Speed-Slider#readme",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1"
+  }
 }

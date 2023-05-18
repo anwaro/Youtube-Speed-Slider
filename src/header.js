@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Player Speed Slider
 // @namespace    youtube_player_speed_slider
-// @version      0.3.0
+// @version      0.4.0
 // @description  Add Speed Slider to Youtube Player Settings
 // @author       Łukasz
 // @match        https://*.youtube.com/*

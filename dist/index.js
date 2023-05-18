@@ -1,26 +1,31 @@
 // ==UserScript==
 // @name         Youtube Player Speed Slider
 // @namespace    youtube_player_speed_slider
-// @version      0.3.0
+// @version      0.4.0
 // @description  Add Speed Slider to Youtube Player Settings
 // @author       Łukasz
 // @match        https://*.youtube.com/*
 // @grant        none
 // ==/UserScript==
-var yts_build_timeout = 500;
-var yts_remove_timeout = 1000;
 
-var yts_el_menu = null;
-var yts_el_slider_label = null;
-var yts_el_slider_check = null;
-var yts_el_slider = null;
-var yts_el_player = null;
+const YTS_BUILD_TIMEOUT = 500;
+const YTS_REMOVE_TIMEOUT = 1000;
 
-var yts_event_em_speed = false;
-var yts_event_player = false;
+const el = {
+    menu: null,
+    icon: null,
+    label: null,
+    check: null,
+    slider: null,
+    player: null,
+}
 
-var yts_r = 'yts_r';
-var yts_s = 'yts_s';
+
+let yts_event_em_speed = false;
+let yts_event_player = false;
+
+const yts_r = 'yts_r';
+const yts_s = 'yts_s';
 
 
 /*************************************
@@ -36,15 +41,15 @@ function ytsInit() {
 
 function ytsBuildApp() {
 
-    yts_el_menu = $yts.get('.ytp-panel-menu');
-    if (yts_el_menu !== null) {
-        setTimeout(ytsRemoveDefaultSpeed, yts_remove_timeout);
+    el.menu = $yts.get('.ytp-panel-menu');
+    console.log(el.menu);
+    if (el.menu !== null) {
+        setTimeout(ytsRemoveDefaultSpeed, YTS_REMOVE_TIMEOUT);
         ytsInitSlider();
         ytsInitMenu();
         ytsInitPlayer();
-    }
-    else {
-        setTimeout(ytsBuildApp, yts_build_timeout);
+    } else {
+        setTimeout(ytsBuildApp, YTS_BUILD_TIMEOUT);
     }
 }
 
@@ -54,19 +59,20 @@ function ytsBuildApp() {
  ************************************/
 
 function ytsInitMenu() {
-
-    var speedMenu = $yts.new('div', {'className': 'ytp-menuitem', id: 'yts-menu'});
-    var right = $yts.new('div', {'className': 'ytp-menuitem-content'});
-    right.appendChild(yts_el_slider_check);
-    right.appendChild(yts_el_slider);
-    speedMenu.appendChild(yts_el_slider_label);
+    el.icon.innerHTML = '<svg height="24" viewBox="0 0 24 24" width="24"><path d="M10,8v8l6-4L10,8L10,8z M6.3,5L5.7,4.2C7.2,3,9,2.2,11,2l0.1,1C9.3,3.2,7.7,3.9,6.3,5z M5,6.3L4.2,5.7C3,7.2,2.2,9,2,11 l1,.1C3.2,9.3,3.9,7.7,5,6.3z            M5,17.7c-1.1-1.4-1.8-3.1-2-4.8L2,13c0.2,2,1,3.8,2.2,5.4L5,17.7z            M11.1,21c-1.8-0.2-3.4-0.9-4.8-2 l-0.6,.8C7.2,21,9,21.8,11,22L11.1,21z            M22,12c0-5.2-3.9-9.4-9-10l-0.1,1c4.6,.5,8.1,4.3,8.1,9s-3.5,8.5-8.1,9l0.1,1 C18.2,21.5,22,17.2,22,12z" fill="white"></path></svg>'
+    const speedMenu = $yts.new('div', {'className': 'ytp-menuitem', id: 'yts-menu'});
+    const right = $yts.new('div', {'className': 'ytp-menuitem-content'});
+    right.appendChild(el.check);
+    right.appendChild(el.slider);
+    speedMenu.appendChild(el.icon);
+    speedMenu.appendChild(el.label);
     speedMenu.appendChild(right);
-    yts_el_menu.appendChild(speedMenu);
+    el.menu.appendChild(speedMenu);
 }
 
 function ytsRemoveDefaultSpeed() {
-    var switchers = $yts.getOpt(".ytp-menuitem", {role: 'menuitemcheckbox'});
-    var toRemove = null;
+    const switchers = $yts.getOpt(".ytp-menuitem", {role: 'menuitemcheckbox'});
+    let toRemove = null;
 
     if (!ytsPlayerHasClass('ad-interrupting') && switchers && switchers.length && !yts_event_em_speed) {
         toRemove = switchers[switchers.length - 1].nextElementSibling;
@@ -78,7 +84,7 @@ function ytsRemoveDefaultSpeed() {
 }
 
 function ytsReopenMenu() {
-    var settings_button = $yts.get(".ytp-settings-button");
+    const settings_button = $yts.get(".ytp-settings-button");
     settings_button && settings_button.click();
     settings_button && settings_button.click();
 }
@@ -89,47 +95,50 @@ function ytsReopenMenu() {
  ************************************/
 
 function ytsInitSlider() {
-    var rem = ytsParam(yts_r);
-    var speed = ytsParam(yts_s) || 1;
+    const rem = ytsParam(yts_r);
+    let speed = ytsParam(yts_s) || 1;
     speed = rem ? speed : 1;
 
-    yts_el_slider_label = $yts.new('div', {'className': 'ytp-menuitem-label'});
-    yts_el_slider_check = $yts.new('input', {
+    el.icon = $yts.new('div', {'className': 'ytp-menuitem-icon'});
+    el.label = $yts.new('div', {'className': 'ytp-menuitem-label'});
+    el.check = $yts.new('input', {
         'type': 'checkbox',
         'title': 'Remember speed',
         style: {
+            'accent-color': '#f00',
             'width': '20px',
             'height': '20px',
             'margin': '0',
             'padding': '0'
         }
     });
-    yts_el_slider = $yts.new('input', {
+    el.slider = $yts.new('input', {
         'type': 'range',
         'min': 0.5,
         'max': 4,
         'step': 0.1,
         'value': speed,
         style: {
+            'accent-color': '#f00',
             'width': 'calc(100% - 30px)',
             'margin': '0 5px',
             'padding': '0'
         }
     });
-    if(rem){
-        yts_el_slider_check.checked = true;
+    if (rem) {
+        el.check.checked = true;
     }
-    $yts.event(yts_el_slider, 'change', ytsChangeSlider);
-    $yts.event(yts_el_slider_check, 'change', ytsChangeRemember);
-    $yts.event(yts_el_slider, 'input', ytsChangeSlider);
-    $yts.event(yts_el_slider, 'wheel', ytsWheelSlider);
+    $yts.event(el.slider, 'change', ytsChangeSlider);
+    $yts.event(el.check, 'change', ytsChangeRemember);
+    $yts.event(el.slider, 'input', ytsChangeSlider);
+    $yts.event(el.slider, 'wheel', ytsWheelSlider);
 
     ytsUpdateSliderLabel(speed);
 }
 
 
 function ytsWheelSlider(event) {
-    var val = parseFloat(event.target.value) + (event.wheelDelta > 0 ? 0.1 : -0.1);
+    let val = parseFloat(event.target.value) + (event.wheelDelta > 0 ? 0.1 : -0.1);
     val = val < 0.5 ? 0.5 : (val > 4 ? 4 : val);
     if (event.target.value !== val) {
         event.target.value = val;
@@ -149,7 +158,7 @@ function ytsChangeRemember() {
 
 function ytsUpdateSliderLabel(val) {
     ytsSetPlayerDuration(val);
-    yts_el_slider_label.innerHTML = 'Speed: ' + parseFloat(val).toFixed(1);
+    el.label.innerHTML = 'Speed: ' + parseFloat(val).toFixed(1);
 }
 
 
@@ -158,7 +167,7 @@ function ytsUpdateSliderLabel(val) {
  ************************************/
 
 function ytsInitPlayer() {
-    yts_el_player = $yts.get('.html5-main-video');
+    el.player = $yts.get('.html5-main-video');
     ytsObservePlayer();
     if (ytsParam(yts_s) && ytsParam(yts_r)) {
         ytsSetPlayerDuration(ytsParam(yts_s));
@@ -167,21 +176,21 @@ function ytsInitPlayer() {
 
 }
 
-function ytsPlayerHasClass (cls) {
+function ytsPlayerHasClass(cls) {
     ytsInitPlayer();
-    return yts_el_player && yts_el_player.classList.contains(cls)
-};
+    return el.player && el.player.classList.contains(cls)
+}
 
 function ytsSetPlayerDuration(value) {
     ytsParam(yts_s, value);
-    if (yts_el_player) {
-        yts_el_player.playbackRate = value;
+    if (el.player) {
+        el.player.playbackRate = value;
     }
 }
 
 function ytsObservePlayer() {
     if (!yts_event_player) {
-        ytsObserver(yts_el_player.parentNode.parentNode, function (mutation) {
+        ytsObserver(el.player.parentNode.parentNode, function (mutation) {
             if (/html5-video-player/.test(mutation.target.className) && !yts_event_em_speed) {
                 ytsRemoveDefaultSpeed();
             }
@@ -199,14 +208,13 @@ $yts = {
         obj.addEventListener(event, callback);
     },
     'new': function (tag, option) {
-        var element = document.createElement(tag);
-        for (var param in option) {
+        const element = document.createElement(tag);
+        for (let param in option) {
             if (param === 'data' || param === 'style' || param === 'attr') {
-                for (var data in option[param]) {
+                for (let data in option[param]) {
                     $yts[param](element, data, option[param][data]);
                 }
-            }
-            else {
+            } else {
                 element[param] = option[param];
             }
         }
@@ -214,23 +222,20 @@ $yts = {
     },
     'get': function (tselector, all) {
         all = all || false;
-        var type = tselector.substring(0, 1);
-        var selector = tselector.substring(1);
-        var elements;
+        const type = tselector.substring(0, 1);
+        const selector = tselector.substring(1);
+        let elements;
         if (type === "#") {
             return document.getElementById(selector);
-        }
-        else if (type === ".") {
+        } else if (type === ".") {
             elements = document.getElementsByClassName(selector);
-        }
-        else {
+        } else {
             elements = document.querySelectorAll(tselector);
         }
 
         if (all) {
             return elements;
-        }
-        else {
+        } else {
             return elements.length ? elements[0] : null;
         }
     },
@@ -260,12 +265,12 @@ $yts = {
 
     },
     'getOpt': function (selector, option) {
-        var el = $yts.get(selector, true);
-        var pass = [];
-        var correct;
-        for (var i = 0; i < el.length; i++) {
+        const el = $yts.get(selector, true);
+        const pass = [];
+        let correct;
+        for (let i = 0; i < el.length; i++) {
             correct = true;
-            for (var prop in option) {
+            for (let prop in option) {
                 if (!$yts.has(el[i], prop, option[prop])) {
                     correct = false;
                     break;
@@ -279,9 +284,9 @@ $yts = {
     },
     'has': function (elem, key, val) {
         if (elem.hasAttribute(key)) {
-            var attr = elem.getAttribute(key);
+            const attr = elem.getAttribute(key);
             if (val !== null) {
-                return attr == val;
+                return attr === val;
             }
             return true;
         }
@@ -293,9 +298,9 @@ $yts = {
  *          OBSERVER                 *
  ************************************/
 function ytsObserver(element, callback) {
-    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+    const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
     if (MutationObserver) {
-        var obs = new MutationObserver(function (mutations) {
+        const obs = new MutationObserver(function (mutations) {
             callback(mutations[0]);
         });
 
