@@ -13,7 +13,13 @@ export default class Component<E extends HTMLElement> {
 
     setParams(params: Record<string, string | number | boolean | undefined>) {
         Object.entries(params).forEach(([key, value]) => {
-            this.element.setAttribute(key, `${value}`);
+            let _value = `${value}`
+
+            if (value === undefined || value === false) {
+                _value = ''
+            }
+
+            this.element.setAttribute(key, _value);
         });
     }
 
