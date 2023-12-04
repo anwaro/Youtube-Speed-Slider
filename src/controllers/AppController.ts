@@ -83,8 +83,6 @@ export class AppController {
     }
 
     getSpeed() {
-        console.log(this.rememberSpeed.get(), this.speed.get())
-        console.log('speed', this.rememberSpeed.get() ? this.speed.get(1) : 1)
         return this.rememberSpeed.get() ? this.speed.get(1) : 1;
     }
 

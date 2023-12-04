@@ -18,7 +18,7 @@ export class Label extends Component<HTMLDivElement> {
     }
 
     updateSpeed(speed: number) {
-        this.speed = speed.toFixed(2);
+        this.speed = speed.toFixed(1);
         this.updateText();
     }
 

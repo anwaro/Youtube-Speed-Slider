@@ -9,22 +9,8 @@ export class Player {
 
     setSpeed(speed: number) {
         const player = this.getPlayer();
-        console.log(`setSpeed(${speed})`, player)
-        if (player === null) {
-            return
+        if (player !== null) {
+            player.playbackRate = speed;
         }
-
-        // const isPaused = player.paused;
-
-        // if (isPaused) {
-        //     player.play();
-        // }
-        player.playbackRate = speed;
-        // player.onloadedmetadata = function () {
-        //     player.playbackRate = speed;
-        // };
-        // if (isPaused) {
-        //     player.pause();
-        // }
     }
 }
