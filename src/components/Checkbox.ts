@@ -5,10 +5,11 @@ export class Checkbox extends Component<HTMLInputElement> {
     constructor(checked: boolean) {
         super(document.createElement('input'));
 
+        this.element.checked = checked
+
         this.setParams({
             type: 'checkbox',
             title: 'Remember speed',
-            checked: checked,
         });
 
         this.setStyle({
