@@ -32,7 +32,7 @@ export class AppController {
         this.icon = new Icon();
         this.label = new Label(initialSpeed);
         this.slider = new Slider(initialSpeed);
-        this.checkbox = new Checkbox();
+        this.checkbox = new Checkbox(this.rememberSpeed.get(false));
         this.observer = new Observer();
 
         this.speedMenuItem.addElement(

@@ -1,17 +1,14 @@
 import Component from './Component';
-import {Store} from '../data/Store';
 
 export class Checkbox extends Component<HTMLInputElement> {
-    private store: Store<boolean>;
 
-    constructor() {
+    constructor(checked: boolean) {
         super(document.createElement('input'));
-        this.store = new Store('yts-remember-speed');
 
         this.setParams({
             type: 'checkbox',
             title: 'Remember speed',
-            checked: this.store.get(),
+            checked: checked,
         });
 
         this.setStyle({
