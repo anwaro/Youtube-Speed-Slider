@@ -6,9 +6,27 @@ export class Icon extends Component<HTMLDivElement> {
 
     constructor() {
         super(document.createElement('div'));
-
-        this.element.innerHTML = `<svg height="24" viewBox="0 0 24 24" width="24"><path d="${this.path}" fill="white" /></svg>`;
+        const svg = this.getSvg();
+        const path = this.getPath();
 
         this.setClasName('ytp-menuitem-icon');
+
+        svg.appendChild(path);
+        this.element.appendChild(svg);
+    }
+
+    getSvg() {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('height', '24');
+        svg.setAttribute('width', '24');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        return svg;
+    }
+
+    getPath() {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('fill', 'white');
+        path.setAttribute('d', this.path);
+        return path;
     }
 }

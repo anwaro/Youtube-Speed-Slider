@@ -30,8 +30,11 @@ export class Menu {
     }
 
     getLabel() {
-        return this.getDefaultMenuItem()?.querySelector('.ytp-menuitem-label')
-            ?.innerHTML;
+        const label = this.getDefaultMenuItem()?.querySelector(
+            '.ytp-menuitem-label',
+        ) as HTMLDivElement | null;
+
+        return label?.innerText;
     }
 
     async reopenMenu() {

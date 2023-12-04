@@ -23,6 +23,6 @@ export class Label extends Component<HTMLDivElement> {
     }
 
     updateText() {
-        this.element.innerHTML = `${this.label}: ${this.speed}`;
+        this.element.innerText = `${this.label}: ${this.speed}`;
     }
 }
