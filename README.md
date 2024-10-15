@@ -8,6 +8,7 @@
 ### Script
 
 Link to script: [greasyfork](https://greasyfork.org/en/scripts/25058-youtube-player-speed-slider)
+Link to github: [github](https://github.com/anwaro/Youtube-Speed-Slider)
 
 
 ### The script works in:
