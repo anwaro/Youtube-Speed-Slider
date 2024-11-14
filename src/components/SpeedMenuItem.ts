@@ -1,16 +1,17 @@
 import Component from './Component';
+import {Dom} from './Dom';
 
-export class SpeedMenuItem extends Component<HTMLDivElement> {
+export class SpeedMenuItem extends Component<'div'> {
     public static readonly ID = 'yts-speed-menu-item';
-    private sliderWrapper = document.createElement('div');
+    private wrapper = Dom.element('div', 'ytp-menuitem-content');
 
     constructor() {
-        super(document.createElement('div'));
-
-        this.setParams({id: SpeedMenuItem.ID});
-        this.setClasName('ytp-menuitem');
-
-        this.sliderWrapper.className = 'ytp-menuitem-content';
+        super('div', {
+            classes: 'ytp-menuitem',
+            attrs: {
+                id: SpeedMenuItem.ID,
+            },
+        });
     }
 
     addElement(
@@ -19,10 +20,7 @@ export class SpeedMenuItem extends Component<HTMLDivElement> {
         slider: HTMLInputElement,
         checkbox: HTMLInputElement,
     ) {
-        this.element.appendChild(icon);
-        this.element.appendChild(label);
-        this.sliderWrapper.appendChild(checkbox);
-        this.sliderWrapper.appendChild(slider);
-        this.element.appendChild(this.sliderWrapper);
+        this.element.append(icon, label, this.wrapper);
+        this.wrapper.append(checkbox, slider);
     }
 }

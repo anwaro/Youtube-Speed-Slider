@@ -1,25 +1,24 @@
 import Component from './Component';
 
-export class Slider extends Component<HTMLInputElement> {
-    public min = 0.5;
-    public max = 4;
+export class Slider extends Component<'input'> {
+    static MIN_VALUE = 0.5;
+    static MAX_VALUE = 4;
 
     constructor(speed: number) {
-        super(document.createElement('input'));
-
-        this.setParams({
-            type: 'range',
-            min: this.min,
-            max: this.max,
-            step: 0.05,
-            value: speed.toString(),
-        });
-
-        this.setStyle({
-            'accent-color': '#f00',
-            width: 'calc(100% - 30px)',
-            margin: '0 5px',
-            padding: '0',
+        super('input', {
+            attrs: {
+                type: 'range',
+                min: Slider.MIN_VALUE,
+                max: Slider.MAX_VALUE,
+                step: 0.05,
+                value: speed.toString(),
+            },
+            styles: {
+                accentColor: '#f00',
+                width: 'calc(100% - 30px)',
+                margin: '0 5px',
+                padding: '0',
+            },
         });
     }
 

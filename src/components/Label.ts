@@ -1,14 +1,13 @@
 import Component from './Component';
 
-export class Label extends Component<HTMLDivElement> {
+export class Label extends Component<'div'> {
     private label: string;
     private speed: string = '1.0';
 
     constructor(speed: number, label = 'Speed') {
-        super(document.createElement('div'));
+        super('div', {classes: 'ytp-menuitem-label'});
         this.label = label;
 
-        this.setClasName('ytp-menuitem-label');
         this.updateSpeed(speed);
     }
 

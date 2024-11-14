@@ -65,8 +65,8 @@ export class AppController {
         const current = this.slider.getSpeed();
         const diff = event.deltaY > 0 ? -0.05 : 0.05;
         const value = Math.max(
-            this.slider.min,
-            Math.min(current + diff, this.slider.max),
+            Slider.MIN_VALUE,
+            Math.min(current + diff, Slider.MAX_VALUE),
         );
 
         if (current != value) {
