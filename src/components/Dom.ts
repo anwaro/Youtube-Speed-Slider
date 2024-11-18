@@ -5,6 +5,8 @@ type HtmlAttr<K extends keyof HTMLElementTagNameMap> = Partial<
 type HtmlEvents<E extends keyof HTMLElementEventMap = keyof HTMLElementEventMap> =
     Partial<Record<E, (this: HTMLElement, ev: HTMLElementEventMap[E]) => void>>;
 
+export type HtmlItem = HtmlData | HTMLElement;
+
 export type HtmlData<
     K extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap,
 > = {
@@ -13,12 +15,7 @@ export type HtmlData<
     attrs?: HtmlAttr<K> & Record<string, unknown>;
     events?: HtmlEvents;
     styles?: Partial<CSSStyleDeclaration>;
-    children?:
-        | (HtmlData | HTMLElement | SVGElement)[]
-        | HtmlData
-        | HTMLElement
-        | SVGElement
-        | string;
+    children?: (HtmlItem | SvgItem)[] | HtmlItem | SvgItem | string;
 };
 
 type SvgAttr<K extends keyof SVGElementTagNameMap> = Partial<
@@ -28,6 +25,8 @@ type SvgAttr<K extends keyof SVGElementTagNameMap> = Partial<
 type SvgEvents<E extends keyof SVGElementEventMap = keyof SVGElementEventMap> =
     Partial<Record<E, (this: HTMLElement, ev: SVGElementEventMap[E]) => void>>;
 
+export type SvgItem = SvgData | SVGElement;
+
 export type SvgData<
     K extends keyof SVGElementTagNameMap = keyof SVGElementTagNameMap,
 > = {
@@ -36,27 +35,37 @@ export type SvgData<
     attrs?: SvgAttr<K> & Record<string, string>;
     events?: SvgEvents;
     styles?: Partial<CSSStyleDeclaration>;
-    children?: (SvgData | SVGElement)[] | SvgData | SVGElement | string;
+    children?: SvgItem[] | SvgItem | string;
 };
 
 export class Dom {
+    static appendChildren(
+        element: HTMLElement | SVGElement,
+        children: HtmlData['children'],
+    ) {
+        if (typeof children === 'string') {
+            element.innerHTML = children;
+        } else if (children) {
+            element.append(
+                ...Dom.array(children).map((item) => {
+                    if (item instanceof HTMLElement || item instanceof SVGElement) {
+                        return item;
+                    }
+                    if (Dom.isSvgItem(item)) {
+                        return Dom.createSvg(item);
+                    }
+                    return Dom.create(item);
+                }),
+            );
+        }
+    }
+
     static create<
         K extends keyof HTMLElementTagNameMap = keyof HTMLElementTagNameMap,
     >(data: HtmlData<K>): HTMLElementTagNameMap[K] {
         const element = document.createElement(data.tag);
 
-        if (typeof data.children === 'string') {
-            element.innerHTML = data.children;
-        } else if (data.children) {
-            element.append(
-                ...Dom.array(data.children).map((item) =>
-                    item instanceof HTMLElement || item instanceof SVGElement
-                        ? item
-                        : Dom.create(item),
-                ),
-            );
-        }
-
+        Dom.appendChildren(element, data.children);
         Dom.applyClass(element, data.classes);
         Dom.applyAttrs(element, data.attrs);
         Dom.applyEvents(element, data.events);
@@ -83,16 +92,7 @@ export class Dom {
             data.tag,
         );
 
-        if (typeof data.children === 'string') {
-            element.innerHTML = data.children;
-        } else if (data.children) {
-            element.append(
-                ...Dom.array(data.children).map((item) =>
-                    item instanceof SVGElement ? item : Dom.createSvg(item),
-                ),
-            );
-        }
-
+        Dom.appendChildren(element, data.children);
         Dom.applyClass(element, data.classes);
         Dom.applyAttrs(element, data.attrs);
         Dom.applyEvents(element, data.events);
@@ -156,6 +156,18 @@ export class Dom {
     static applyClass(element: HTMLElement | SVGElement, classes?: string) {
         if (classes) {
             element.setAttribute('class', classes);
+        }
+    }
+
+    static isSvgItem(item: SvgData | HtmlData): item is SvgData {
+        try {
+            const element = document.createElementNS(
+                'http://www.w3.org/2000/svg',
+                item.tag,
+            );
+            return element.namespaceURI === 'http://www.w3.org/2000/svg';
+        } catch (error) {
+            return false;
         }
     }
 }
